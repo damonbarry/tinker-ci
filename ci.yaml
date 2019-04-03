@@ -3,24 +3,25 @@ pool:
 
 steps:
   - powershell: |
-      #Write-Host '\n\nAre openssl libraries already installed?'
+      #Write-Host '>>> Are openssl libraries already installed?'
       #Get-ChildItem -Recurse -Path 'C:\' -Name '*eay32.dll'
 
-      Write-Host '\n\nWhere is vcpkg?'
+      Write-Host '>>> Where is vcpkg?'
       $vcpkg = Get-Command vcpkg.exe -ErrorAction SilentlyContinue
       if (!$?) {
         Throw 'vcpkg not found'
       }
+      Write-Host "$vcPkg.Path"
       $vcpkgPath = (Get-Item $vcpkg.Path).Parent
 
-      Write-Host "\n\nInstalling OpenSSL for x64..."
+      Write-Host '>>> Installing OpenSSL for x64...'
       vcpkg install openssl:x64-windows
       if ($LastExitCode)
       {
           Throw "Installing openssl failed with code '$LastExitCode'"
       }
 
-      Write-Host '\n\nFind openssl libraries under vcpkg:'
+      Write-Host '>>> Find openssl libraries under vcpkg:'
       Get-ChildItem -Recurse -Path "$vcpkgPath" -Name '*eay32.dll'
 
-      Write-Host '\n\nDone!'
+      Write-Host '>>> Done!'
