@@ -11,7 +11,7 @@ steps:
       if (!$?) {
         Throw 'vcpkg not found'
       }
-      Write-Host "$vcPkg.Path"
+      Write-Host $vcpkg.Path
       $vcpkgPath = (Get-Item $vcpkg.Path).Parent
 
       Write-Host '>>> Installing OpenSSL for x64...'
