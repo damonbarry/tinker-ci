@@ -12,7 +12,7 @@ steps:
         Throw 'vcpkg not found'
       }
       Write-Host $vcpkg.Path
-      $vcpkgPath = (Get-Item $vcpkg.Path).Parent
+      $vcpkgPath = (Get-Item $vcpkg.Path).DirectoryName
 
       Write-Host '>>> Installing OpenSSL for x64...'
       vcpkg install openssl:x64-windows
@@ -22,6 +22,6 @@ steps:
       }
 
       Write-Host '>>> Find openssl libraries under vcpkg:'
-      Get-ChildItem -Recurse -Path "$vcpkgPath" -Name '*eay32.dll'
+      Get-ChildItem -Recurse -Path $vcpkgPath -Name '*eay32.dll'
 
       Write-Host '>>> Done!'
