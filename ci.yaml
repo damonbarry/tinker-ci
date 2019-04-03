@@ -5,10 +5,13 @@ steps:
   - powershell: |
       Write-Host '>>> Are openssl libraries already installed?'
       #Get-ChildItem -Recurse -Path 'C:\' -Name '*eay32.dll'
-      Get-ChildItem -Recurse -Path 'C:\Program Files\Git\*' -Include 'libeay32.dll', 'ssleay32.dll' -Name
-      Get-ChildItem -Recurse -Path 'C:\Program Files (x86)\Subversion\*' -Include 'libeay32.dll', 'ssleay32.dll' -Name
-      Get-ChildItem -Recurse -Path 'C:\Strawberry\*' -Include 'libeay32.dll', 'ssleay32.dll' -Name
-      Get-ChildItem -Recurse -Path 'C:\Program Files\OpenSSL\*' -Include 'libeay32.dll', 'ssleay32.dll' -Name
+      'C:\Program Files\Git',
+      'C:\Program Files (x86)\Subversion',
+      'C:\Strawberry',
+      'C:\Program Files\OpenSSL' |
+      ForEach-Object {
+        (Get-ChildItem -Recurse -Path "$_\*" -Include 'libeay32.dll', 'ssleay32.dll').FullName
+      }
 
       Write-Host '>>> Where is vcpkg?'
       $vcpkg = Get-Command vcpkg.exe -ErrorAction SilentlyContinue
@@ -26,6 +29,6 @@ steps:
       }
 
       Write-Host '>>> Find openssl libraries under vcpkg:'
-      Get-ChildItem -Recurse -Path $vcpkgPath -Include 'libeay32.dll', 'ssleay32.dll' -Name
+      (Get-ChildItem -Recurse -Path "$vcpkgPath\*" -Include 'libeay32.dll', 'ssleay32.dll').FullName
 
       Write-Host '>>> Done!'
