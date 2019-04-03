@@ -1,0 +1,26 @@
+pool:
+  vmImage: vs2017-win2016
+
+steps:
+  - powershell: |
+      Write-Host '\n\nAre openssl libraries already installed?'
+      Get-ChildItem -Recurse -Path 'C:\' -Name '*eay32.dll'
+
+      Write-Host '\n\nWhere is vcpkg?'
+      $vcpkg = Get-Command vcpkg.exe -ErrorAction SilentlyContinue
+      if (!$?) {
+        Throw 'vcpkg not found'
+      }
+      $vcpkgPath = (Get-Item $vcpkg.Path).Parent
+
+      Write-Host "\n\nInstalling OpenSSL for x64..."
+      vcpkg install openssl:x64-windows
+      if ($LastExitCode)
+      {
+          Throw "Installing openssl failed with code '$LastExitCode'"
+      }
+
+      Write-Host '\n\nFind openssl libraries under vcpkg:'
+      Get-ChildItem -Recurse -Path "$vcpkgPath" -Name '*eay32.dll'
+
+      Write-Host '\n\nDone!'
