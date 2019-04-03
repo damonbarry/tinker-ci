@@ -3,8 +3,8 @@ pool:
 
 steps:
   - powershell: |
-      Write-Host '\n\nAre openssl libraries already installed?'
-      Get-ChildItem -Recurse -Path 'C:\' -Name '*eay32.dll'
+      #Write-Host '\n\nAre openssl libraries already installed?'
+      #Get-ChildItem -Recurse -Path 'C:\' -Name '*eay32.dll'
 
       Write-Host '\n\nWhere is vcpkg?'
       $vcpkg = Get-Command vcpkg.exe -ErrorAction SilentlyContinue
