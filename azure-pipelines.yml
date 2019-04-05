@@ -79,6 +79,9 @@ jobs:
 
   - job: three
     displayName: Three
+    dependsOn:
+    - one
+    - two
 
     pool:
       vmImage: Ubuntu-16.04
