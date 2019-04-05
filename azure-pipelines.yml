@@ -1,11 +1,16 @@
 trigger: none
 pr: none
 
+variables:
+  skipComponentGovernanceDetection: true
+
 jobs:
   - job: one
     displayName: One
+
     pool:
       vmImage: Ubuntu-16.04
+
     steps:
     - script: |
         mkdir -p tmp/a
@@ -36,6 +41,7 @@ jobs:
       inputs:
         pathtoPublish: $(Build.ArtifactStagingDirectory)
         artifactName: my-artifacts
+
   - job: two
     displayName: Two
     pool:
@@ -70,3 +76,26 @@ jobs:
       inputs:
         pathtoPublish: $(Build.ArtifactStagingDirectory)
         artifactName: my-artifacts
+
+  - job: three
+    displayName: Three
+
+    pool:
+      vmImage: Ubuntu-16.04
+
+    steps:
+    - checkout: none
+
+    - task: DownloadBuildArtifacts@0
+      displayName: Download artifacts
+      inputs:
+        artifactName: my-artifacts
+
+    - task: CopyFiles@2
+      displayName: Copy artifacts somewhere else
+      inputs:
+        sourceFolder: $(System.ArtifactsDirectory)/a
+        targetFolder: $(System.DefaultWorkingDirectory)
+
+    - script: |
+        find .
