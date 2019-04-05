@@ -97,7 +97,7 @@ jobs:
     - task: CopyFiles@2
       displayName: Copy artifacts somewhere else
       inputs:
-        sourceFolder: $(System.ArtifactsDirectory)/a
+        sourceFolder: $(System.ArtifactsDirectory)/my-artifacts
         targetFolder: $(System.DefaultWorkingDirectory)
 
     - script: |
