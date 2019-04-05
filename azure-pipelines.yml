@@ -1,36 +1,72 @@
 trigger: none
 pr: none
 
-pool:
-  vmImage: Ubuntu-16.04
+jobs:
+  - job: one
+    displayName: One
+    pool:
+      vmImage: Ubuntu-16.04
+    steps:
+    - script: |
+        mkdir -p tmp/a
+        mkdir -p tmp/b
+        mkdir -p tmp/c
+        echo "a" > tmp/a/a.txt
+        echo "b" > tmp/b/b.txt
+        echo "c" > tmp/c/c.txt
+      displayName: Create some files
 
-steps:
-- script: |
-    mkdir -p tmp/a
-    mkdir -p tmp/b
-    mkdir -p tmp/c
-    echo "a" > tmp/a/a.txt
-    echo "b" > tmp/b/b.txt
-    echo "c" > tmp/c/c.txt
-  displayName: Create some files
+    - task: CopyFiles@2
+      displayName: Stage artifacts
+      inputs:
+        sourceFolder: $(Build.SourcesDirectory)/tmp
+        contents: |
+          a/a.txt
+          b/b.txt
+        targetFolder: $(Build.ArtifactStagingDirectory)
 
-- task: CopyFiles@2
-  displayName: Stage artifacts
-  inputs:
-    sourceFolder: $(Build.SourcesDirectory)/tmp
-    contents: |
-      a/a.txt
-      b/b.txt
-    targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: CopyFiles@2
+      displayName: Stage more artifacts
+      inputs:
+        contents: $(Build.SourcesDirectory)/tmp/c/c.txt
+        targetFolder: $(Build.ArtifactStagingDirectory)
 
-- task: CopyFiles@2
-  displayName: Stage more artifacts
-  inputs:
-    contents: $(Build.SourcesDirectory)/tmp/c/c.txt
-    targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: PublishBuildArtifacts@1
+      displayName: Publish artifacts
+      inputs:
+        pathtoPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: my-artifacts
+  - job: two
+    displayName: Two
+    pool:
+      vmImage: Ubuntu-16.04
+    steps:
+    - script: |
+        mkdir -p tmp/x
+        mkdir -p tmp/y
+        mkdir -p tmp/z
+        echo "x" > tmp/x/x.txt
+        echo "y" > tmp/y/y.txt
+        echo "z" > tmp/z/z.txt
+      displayName: Create some files
 
-- task: PublishBuildArtifacts@1
-  displayName: Publish artifacts
-  inputs:
-    pathtoPublish: $(Build.ArtifactStagingDirectory)
-    artifactName: my-artifacts
+    - task: CopyFiles@2
+      displayName: Stage artifacts
+      inputs:
+        sourceFolder: $(Build.SourcesDirectory)/tmp
+        contents: |
+          x/x.txt
+          y/y.txt
+        targetFolder: $(Build.ArtifactStagingDirectory)
+
+    - task: CopyFiles@2
+      displayName: Stage more artifacts
+      inputs:
+        contents: $(Build.SourcesDirectory)/tmp/z/z.txt
+        targetFolder: $(Build.ArtifactStagingDirectory)
+
+    - task: PublishBuildArtifacts@1
+      displayName: Publish artifacts
+      inputs:
+        pathtoPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: my-artifacts
