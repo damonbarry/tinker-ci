@@ -1,0 +1,36 @@
+trigger: none
+pr: none
+
+pool:
+  vmImage: Ubuntu-16.04
+
+steps:
+- script: |
+    mkdir -p tmp/a
+    mkdir -p tmp/b
+    mkdir -p tmp/c
+    echo "a" > tmp/a/a.txt
+    echo "b" > tmp/b/b.txt
+    echo "c" > tmp/c/c.txt
+  displayName: Create some files
+
+- task: CopyFiles@2
+  displayName: Stage artifacts
+  inputs:
+    sourceFolder: $(Build.SourcesDirectory)/tmp
+    contents: |
+      a/a.txt
+      b/b.txt
+    targetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: CopyFiles@2
+  displayName: Stage more artifacts
+  inputs:
+    contents: $(Build.SourcesDirectory)/tmp/c/c.txt
+    targetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish artifacts
+  inputs:
+    pathtoPublish: $(Build.ArtifactStagingDirectory)
+    artifactName: my-artifacts
